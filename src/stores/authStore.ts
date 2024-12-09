@@ -75,6 +75,7 @@ supabase.auth.getSession().then(({ data: { session } }) => {
   }
 });
 
+
 // Setup auth listener
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
@@ -83,7 +84,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       .select('*')
       .eq('id', session.user.id)
       .single();
-
+/*
     if (!error && userData) {
       useAuthStore.setState({ user: userData, loading: false });
     } else {
@@ -91,5 +92,13 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     }
   } else {
     useAuthStore.setState({ user: null, loading: false });
-  }
+  }*/
+//new code
+   
+    if (error) {
+      console.error('Login error:', error);
+    } else {
+      console.log('User session:', data);
+    }
+    
 });
