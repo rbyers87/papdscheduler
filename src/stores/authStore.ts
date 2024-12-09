@@ -77,6 +77,8 @@ supabase.auth.getSession().then(({ data: { session } }) => {
 
 
 // Setup auth listener
+
+/*
 supabase.auth.onAuthStateChange(async (event, session) => {
   if (session?.user) {
     const { data: userData, error } = await supabase
@@ -84,7 +86,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
       .select('*')
       .eq('id', session.user.id)
       .single();
-/*
+
     if (!error && userData) {
       useAuthStore.setState({ user: userData, loading: false });
     } else {
@@ -92,13 +94,39 @@ supabase.auth.onAuthStateChange(async (event, session) => {
     }
   } else {
     useAuthStore.setState({ user: null, loading: false });
-  }*/
-//new code
-   
-    if (error) {
-      console.error('Login error:', error);
+  }
+
+  */
+
+  //new code
+
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (session?.user) {
+      try {
+        // Query the `users` table for the logged-in user's details
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single(); // Ensure only one row is returned
+  
+        if (error) {
+          console.error('Error fetching user data:', error.message);
+          useAuthStore.setState({ loading: false, error: error.message });
+        } else if (userData) {
+          console.log('User data fetched successfully:', userData);
+          useAuthStore.setState({ user: userData, loading: false });
+        } else {
+          console.warn('No user data found for the given ID.');
+          useAuthStore.setState({ loading: false, error: 'No user data found' });
+        }
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        useAuthStore.setState({ loading: false, error: err.message });
+      }
     } else {
-      console.log('User session:', data);
+      // Handle case when user logs out or session is invalid
+      console.info('User logged out or session invalid.');
+      useAuthStore.setState({ user: null, loading: false });
     }
-    
-});
+  });
