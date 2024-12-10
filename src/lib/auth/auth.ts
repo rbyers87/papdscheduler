@@ -6,33 +6,36 @@ export async function signIn(email: string, password: string) {
       email,
       password,
     });
-    
-    if (authError) throw authError;
-    
-    // First enable bypass RLS for admin check
-    await supabase.rpc('admin_check', { user_id: authData.user.id });
-    
-    // Fetch user data after successful authentication
+
+    if (authError) {
+      console.error('Auth error:', authError.message);
+      throw new Error('Invalid email or password');
+    }
+
+    console.log('Authenticated User ID:', authData.user.id);
+
+    // Enable bypass RLS for admin check
+    const { error: rpcError } = await supabase.rpc('admin_check', { user_id: authData.user.id });
+    if (rpcError) {
+      console.error('Admin check error:', rpcError.message);
+      throw rpcError;
+    }
+
+    // Fetch user data
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('*')
       .eq('id', authData.user.id)
       .single();
-      
-    if (userError) throw userError;
-    
+
+    if (userError) {
+      console.error('User fetch error:', userError.message);
+      throw new Error('User data not found');
+    }
+
     return { session: authData.session, user: userData };
   } catch (error) {
-    console.error('Sign in error:', error);
-    throw new Error('Invalid email or password');
+    console.error('Sign in error:', error.message || error);
+    throw error; // This will return the error to the calling function
   }
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
-
-export function onAuthStateChange(callback: (event: string, session: any) => void) {
-  return supabase.auth.onAuthStateChange(callback);
 }
