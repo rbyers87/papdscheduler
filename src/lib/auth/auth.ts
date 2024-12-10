@@ -3,51 +3,49 @@ import { supabase } from '../supabase';
 
 export async function signIn(email: string, password: string) {
   try {
-    // Attempt to sign in with Supabase
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    // Check if there was an error during authentication
+    // Log the auth data and any errors for debugging
+    console.log("Auth Data:", authData);  // Logs the auth response
+    console.log("Auth Error:", authError);  // Logs any error if present
+
     if (authError) {
       console.error('Auth error:', authError.message);
       throw new Error('Invalid email or password');
     }
 
-    // Log the full authData for debugging purposes
-    console.log('Authenticated User:', authData);
+    console.log('Authenticated User:', authData); // Log the full response
 
-    // Ensure the user ID is available in authData
+    // Check if user data exists
     if (!authData?.user?.id) {
       console.error('No user ID returned from authentication');
       throw new Error('Invalid email or password');
     }
 
-    // Perform admin check if needed (bypass RLS)
+    // Enable bypass RLS for admin check
     const { error: rpcError } = await supabase.rpc('admin_check', { user_id: authData.user.id });
     if (rpcError) {
       console.error('Admin check error:', rpcError.message);
       throw rpcError;
     }
 
-    // Fetch user data from the 'users' table
+    // Fetch user data
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('*')
       .eq('id', authData.user.id)
       .single();
 
-    // If there's an error fetching user data, throw it
     if (userError) {
       console.error('User fetch error:', userError.message);
       throw new Error('User data not found');
     }
 
-    // Return session and user data
     return { session: authData.session, user: userData };
   } catch (error) {
-    // Catch any errors, log them, and rethrow
     console.error('Sign-in error:', error.message || error);
     throw error;
   }
