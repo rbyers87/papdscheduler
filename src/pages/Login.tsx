@@ -27,7 +27,6 @@ function Login() {
       await signIn(data.email, data.password);
       navigate('/dashboard');
     } catch (error) {
-      // If error is thrown during sign-in, show it to the user
       console.error('Login failed:', error);
     } finally {
       setIsLoading(false);
@@ -51,16 +50,18 @@ function Login() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Work Email
               </label>
               <div className="mt-1">
                 <input
+                  id="email"
                   {...register('email')}
                   type="email"
                   autoComplete="email"
-                  disabled={isLoading} // Disable input while loading
+                  disabled={isLoading}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
                 {errors.email && (
@@ -69,16 +70,18 @@ function Login() {
               </div>
             </div>
 
+            {/* Password Field */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="mt-1">
                 <input
+                  id="password"
                   {...register('password')}
                   type="password"
                   autoComplete="current-password"
-                  disabled={isLoading} // Disable input while loading
+                  disabled={isLoading}
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
                 {errors.password && (
@@ -87,18 +90,20 @@ function Login() {
               </div>
             </div>
 
+            {/* Authentication Error */}
             {authError && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="flex">
                   <div className="ml-3">
                     <h3 className="text-sm font-medium text-red-800">
-                      {authError} {/* Displaying auth error message */}
+                      {authError}
                     </h3>
                   </div>
                 </div>
               </div>
             )}
 
+            {/* Submit Button */}
             <div>
               <button
                 type="submit"
@@ -110,6 +115,7 @@ function Login() {
             </div>
           </form>
 
+          {/* Demo Credentials */}
           <div className="mt-6">
             <div className="relative">
               <div className="relative flex justify-center text-sm">
@@ -130,3 +136,4 @@ function Login() {
 }
 
 export default Login;
+
