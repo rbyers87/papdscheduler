@@ -8,12 +8,14 @@ export async function signIn(email: string, password: string) {
       password,
     });
 
-    // Log the auth data and any errors for debugging
-    console.log("Auth Data:", authData);  // Logs the auth response
-    console.log("Auth Error:", authError);  // Logs any error if present
+    // Ensure authData is not undefined before logging
+    if (authData) {
+      console.log("Auth Data:", authData); // Logs the auth response
+    }
 
+    // Log authError if exists
     if (authError) {
-      console.error('Auth error:', authError.message);
+      console.log("Auth Error:", authError); // Logs the error response
       throw new Error('Invalid email or password');
     }
 
