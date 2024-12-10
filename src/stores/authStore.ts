@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { signIn, signOut } from '../lib/auth/auth';
 import { getCurrentUser } from '../lib/auth/session';
 import type { User } from '../types';
+import { signOut } from '../lib/auth/auth';
+
 
 interface AuthState {
   user: User | null;
