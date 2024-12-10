@@ -3,23 +3,24 @@ import { supabase } from '../supabase';
 
 export async function signIn(email: string, password: string) {
   try {
+    // Sign-in with Supabase
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    // Ensure authData is not undefined before logging
+    // Log authData and authError only after sign-in attempt
     if (authData) {
-      console.log("Auth Data:", authData); // Logs the auth response
+      console.log("Auth Data:", authData); // Logs the authentication data
+    } else {
+      console.log("Auth Error:", authError); // Logs any authentication error
     }
 
-    // Log authError if exists
+    // Handle error case if authData is not defined
     if (authError) {
-      console.log("Auth Error:", authError); // Logs the error response
+      console.error('Authentication error:', authError.message);
       throw new Error('Invalid email or password');
     }
-
-    console.log('Authenticated User:', authData); // Log the full response
 
     // Check if user data exists
     if (!authData?.user?.id) {
@@ -53,7 +54,7 @@ export async function signIn(email: string, password: string) {
   }
 }
 
-// Add the signOut function
+// Sign-out function
 export async function signOut() {
   try {
     const { error } = await supabase.auth.signOut();
@@ -68,3 +69,4 @@ export async function signOut() {
     throw error;
   }
 }
+
