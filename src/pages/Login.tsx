@@ -27,6 +27,7 @@ function Login() {
       await signIn(data.email, data.password);
       navigate('/dashboard');
     } catch (error) {
+      // If error is thrown during sign-in, show it to the user
       console.error('Login failed:', error);
     } finally {
       setIsLoading(false);
@@ -59,6 +60,7 @@ function Login() {
                   {...register('email')}
                   type="email"
                   autoComplete="email"
+                  disabled={isLoading} // Disable input while loading
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
                 {errors.email && (
@@ -76,6 +78,7 @@ function Login() {
                   {...register('password')}
                   type="password"
                   autoComplete="current-password"
+                  disabled={isLoading} // Disable input while loading
                   className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
                 {errors.password && (
@@ -89,7 +92,7 @@ function Login() {
                 <div className="flex">
                   <div className="ml-3">
                     <h3 className="text-sm font-medium text-red-800">
-                      {authError}
+                      {authError} {/* Displaying auth error message */}
                     </h3>
                   </div>
                 </div>
