@@ -7,7 +7,7 @@ import { useAuthStore } from '../stores/authStore';
 import { Calendar } from 'lucide-react';
 
 const loginSchema = z.object({
-  email: z.string().email().endsWith('@work.com', { message: 'Must be a work email' }),
+  email: z.string().email().endsWith('@portarthurtx.gov', { message: 'Must be a work email' }),
   password: z.string().min(6)
 });
 
