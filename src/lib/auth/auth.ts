@@ -1,3 +1,4 @@
+// src/lib/auth/auth.ts
 import { supabase } from '../supabase';
 
 export async function signIn(email: string, password: string) {
@@ -42,6 +43,22 @@ export async function signIn(email: string, password: string) {
     return { session: authData.session, user: userData };
   } catch (error) {
     console.error('Sign-in error:', error.message || error);
+    throw error;
+  }
+}
+
+// Add the signOut function
+export async function signOut() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Sign-out error:', error.message);
+      throw new Error('Error during sign-out');
+    }
+
+    console.log('User signed out successfully');
+  } catch (error) {
+    console.error('Sign-out error:', error.message || error);
     throw error;
   }
 }
